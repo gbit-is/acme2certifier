@@ -189,7 +189,7 @@ jobs:
         sudo openssl x509 -in lego/certificates/lego.acme.crt -text -ext keyUsage | grep "Digital Signature, Non Repudiation"
         sudo openssl x509 -in lego/certificates/lego.acme.crt -text -ext extendedKeyUsage | grep "TLS Web Server Authentication, Code Signing"
 
-    - name: "04 - Enroll acme with a not allowd fqdn in kid.json (to fail)"
+    - name: "04 - Enroll acme with a not allowed fqdn in kid.json (to fail)"
       id: acmefail02
       continue-on-error: true
       run: |
@@ -203,7 +203,7 @@ jobs:
         echo "acmefail outcome is ${{steps.acmefail02.outcome }}"
         exit 1
 
-    - name: "04a - Enroll lego with a template_name taken from header_info NOT included in kid.json (to fail)"
+    - name: "04 - Enroll lego with a not allowed fqdn in kid.json (to fail)"
       id: legofail02
       continue-on-error: true
       run: |
