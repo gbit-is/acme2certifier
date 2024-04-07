@@ -982,7 +982,6 @@ class CAhandler(object):
                 # we need to cover cases where handler_value is enabled but nothing is defined in json
             else:
                 self.logger.error('CAhandler._profile_check(): eab_profiling enabled but no handler defined')
-
         elif self.header_info_field:
             # no profiling - parse profileid from http_header
             hil_value = header_info_lookup(self.logger, csr, self.header_info_field, handler_hifield)
