@@ -111,7 +111,6 @@ jobs:
         sudo openssl x509 -in lego/certificates/lego.acme.crt -text -noout
         sudo openssl x509 -in lego/certificates/lego.acme.crt -text -ext keyUsage | grep "Digital Signature, Non Repudiation, Key Encipherment, Key Agreement"
         sudo openssl x509 -in lego/certificates/lego.acme.crt -text -ext extendedKeyUsage | grep "TLS Web Server Authentication, Code Signing"
-        exit 1
 
     - name: "[ * ] collecting test logs"
       if: ${{ failure() }}
@@ -250,7 +249,6 @@ jobs:
         sudo openssl x509 -in lego/certificates/lego.acme.crt -text -noout
         sudo openssl x509 -in lego/certificates/lego.acme.crt -text -ext keyUsage | grep "Digital Signature, Non Repudiation, Key Encipherment, Key Agreement"
         sudo openssl x509 -in lego/certificates/lego.acme.crt -text -ext extendedKeyUsage | grep "TLS Web Server Authentication, Code Signing"
-        exit 1
 
     - name: "[ * ] collecting test logs"
       if: ${{ failure() }}
