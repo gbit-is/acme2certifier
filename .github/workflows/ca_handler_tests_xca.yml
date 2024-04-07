@@ -21,6 +21,20 @@ jobs:
     - name: "checkout GIT"
       uses: actions/checkout@v4
 
+    - name: "Build docker-compose (${{ matrix.websrv }}_${{ matrix.dbhandler }})"
+      working-directory: examples/Docker/
+      run: |
+        sudo mkdir -p data
+        sed -i "s/wsgi/$DB_HANDLER/g" .env
+        sed -i "s/apache2/$WEB_SRV/g" .env
+        # cat .env
+        docker network create acme
+        # docker-compose up -d
+        # docker-compose logs
+      env:
+        WEB_SRV: ${{ matrix.websrv }}
+        DB_HANDLER: ${{ matrix.dbhandler }}
+
     - name: "Setup a2c with xca_ca_handler - profiling"
       run: |
         sudo cp .github/acme2certifier.pem examples/Docker/data/acme2certifier.pem
