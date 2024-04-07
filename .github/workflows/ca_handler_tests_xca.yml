@@ -491,7 +491,7 @@ jobs:
         sudo sed -i "s/\"profile_id\"\: \[\"profile_1\", \"profile_2\", \"profile_3\"\]/\"template_name\"\: \[\"template\", \"acme\"\]/g" data/acme_ca/kid_profiles.json
         sudo sed -i "s/\"profile_id\"\: \"profile_2\"/\"template_name\"\: \"template\"/g" data/acme_ca/kid_profiles.json
         sudo sed -i "s/\"ca_name\": \"example_ca_2\",/\"issuing_ca_name\": \"root-ca\",\n      \"issuing_ca_key\": \"root-ca\"/g" data/acme_ca/kid_profiles.json
-        sudo sed -i "s/\"ca_name\": \"example_ca\",/\"unknown_key\": \"unknown_value\"/g"data/acme_ca/kid_profiles.json
+        sudo sed -i "s/\"ca_name\": \"example_ca\",/\"unknown_key\": \"unknown_value\"/g" data/acme_ca/kid_profiles.json
         sudo sed -i "s/example.net/acme/g" data/acme_ca/kid_profiles.json
         sudo sed -i '19,20d' data/acme_ca/kid_profiles.json
         sudo sed -i '8,9d' data/acme_ca/kid_profiles.json
