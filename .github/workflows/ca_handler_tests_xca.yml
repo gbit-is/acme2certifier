@@ -35,6 +35,11 @@ jobs:
         WEB_SRV: ${{ matrix.websrv }}
         DB_HANDLER: ${{ matrix.dbhandler }}
 
+    - name: "Create acme-sh and lego folder"
+      run: |
+        mkdir acme-sh
+        mkdir lego
+
     - name: "Setup a2c with xca_ca_handler - profiling"
       run: |
         sudo cp .github/acme2certifier.pem examples/Docker/data/acme2certifier.pem
