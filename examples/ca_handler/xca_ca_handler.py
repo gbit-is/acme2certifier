@@ -987,7 +987,6 @@ class CAhandler(object):
             hil_value = header_info_lookup(self.logger, csr, self.header_info_field, handler_hifield)
             if hil_value:
                 self.logger.debug('CAhandler._profile_check(): setting %s to %s', handler_hifield, hil_value)
-                # self.template_name = hil_value
                 setattr(self, handler_hifield, hil_value)
 
         self.logger.debug('CAhandler._profile_check() ended with %s', error)
