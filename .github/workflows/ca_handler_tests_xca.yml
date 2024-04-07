@@ -96,9 +96,11 @@ jobs:
     - name: "Test if https://acme-srv/directory is accessable"
       run: docker run -i --rm --network acme curlimages/curl --insecure -f https://acme-srv/directory
 
+
     - name: "01 - Enroll acme with a template_name/ca_name taken from kid.json"
       run: |
-        docker run --rm -i -v "$(pwd)/acme-sh":/acme.sh --network acme --name=acme-sh neilpang/acme.sh:latest --issue --server http://acme-srv --accountemail 'acme-sh@example.com' --eab-kid keyid_01 --eab-hmac-key YW5vdXRoZXJfdmVyeV9sb25nX2htYWNfZm9yX2tleWlkXzAxX3doaWNoIHdpbGxfYmUgdXNlZF9kdXJpbmcgcmVncmVzc2lvbg -d acme-sh.acme --alpn --standalone --debug 3 --output-insecure --force
+        docker run -i acme-sh acme.sh --server http://acme-srv --register-account --accountemail 'acme-sh@example.com' --eab-kid keyid_01 --eab-hmac-key YW5vdXRoZXJfdmVyeV9sb25nX2htYWNfZm9yX2tleWlkXzAxX3doaWNoIHdpbGxfYmUgdXNlZF9kdXJpbmcgcmVncmVzc2lvbg --debug 3
+        docker exec -i acme-sh acme.sh --server http://acme-srv --issue -d acme-sh.acme --standalone --debug 3 --output-insecure
         awk 'BEGIN {c=0;} /BEGIN CERT/{c++} { print > "cert-" c ".pem"}' < acme-sh/acme-sh.acme_ecc/ca.cer
         openssl verify -CAfile cert-2.pem -untrusted cert-1.pem  acme-sh/acme-sh.acme_ecc/acme-sh.acme.cer
         openssl x509 -in acme-sh/acme-sh.acme_ecc/acme-sh.acme.cer -text -noout
