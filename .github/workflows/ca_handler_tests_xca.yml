@@ -96,7 +96,6 @@ jobs:
     - name: "Test if https://acme-srv/directory is accessable"
       run: docker run -i --rm --network acme curlimages/curl --insecure -f https://acme-srv/directory
 
-
     - name: "01 - Enroll acme with a template_name/ca_name taken from kid.json"
       run: |
         sudo rm -rf lego/*
@@ -105,8 +104,8 @@ jobs:
         awk 'BEGIN {c=0;} /BEGIN CERT/{c++} { print > "cert-" c ".pem"}' < acme-sh/acme-sh.acme_ecc/ca.cer
         openssl verify -CAfile cert-2.pem -untrusted cert-1.pem  acme-sh/acme-sh.acme_ecc/acme-sh.acme.cer
         openssl x509 -in acme-sh/acme-sh.acme_ecc/acme-sh.acme.cer -text -noout
-        openssl x509 -in acme-sh/acme-sh.acme_ecc/acme-sh.acme.cer -ext keyUsage -noout | grep "Digital Signature, Non Repudiation, Key Encipherment, Key Agreement"
-        openssl x509 -in acme-sh/acme-sh.acme_ecc/acme-sh.acme.cer -ext extendedKeyUsage -noout | grep "TLS Web Server Authentication, TLS Web Client Authentication"
+        openssl x509 -in acme-sh/acme-sh.acme_ecc/acme-sh.acme.cer -ext keyUsage -noout | grep "Digital Signature, Non Repudiation"
+        openssl x509 -in acme-sh/acme-sh.acme_ecc/acme-sh.acme.cer -ext extendedKeyUsage -noout | grep "TLS Web Server Authentication, Code Signing"
 
     - name: "01 - Enroll lego with a template_name/ca_name taken from kid.json"
       run: |
