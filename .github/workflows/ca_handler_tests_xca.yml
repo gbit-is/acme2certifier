@@ -124,12 +124,12 @@ jobs:
       run: |
         sudo rm -rf acme-sh/*
         docker run --rm -i -v "$(pwd)/acme-sh":/acme.sh --network acme --name=acme-sh neilpang/acme.sh:latest --register-account --server http://acme-srv --accountemail 'acme-sh@example.com' --eab-kid keyid_00 --eab-hmac-key V2VfbmVlZF9hbm90aGVyX3ZlcnkfX2xvbmdfaG1hY190b19jaGVja19lYWJfZm9yX2tleWlkXzAwX2FzX2xlZ29fZW5mb3JjZXNfYW5faG1hY19sb25nZXJfdGhhbl8yNTZfYml0cw --debug 3
-        docker run --rm -i -v "$(pwd)/acme-sh":/acme.sh --network acme --name=acme-sh neilpang/acme.sh:latest --issue --server http://acme-srv --useragent template_name=acme -d acme-sh.acme --standalone --debug 3 --output-insecure
+        docker run --rm -i -v "$(pwd)/acme-sh":/acme.sh --network acme --name=acme-sh neilpang/acme.sh:latest --issue --server http://acme-srv --useragent template_name=unknown -d acme-sh.acme --standalone --debug 3 --output-insecure
 
     - name: "02a - check  result "
       if: steps.acmefail.outcome != 'failure'
       run: |
-        echo "acmefail outcome is ${{steps.certbotfail.outcome }}"
+        echo "acmefail outcome is ${{steps.acmefail.outcome }}"
         exit 1
 
     - name: "02b - Enroll acme with a template_name taken from header_info included in kid.json"
@@ -148,12 +148,12 @@ jobs:
       continue-on-error: true
       run: |
         sudo rm -rf lego/*
-        docker run -i -v $PWD/lego:/.lego/ --rm --name lego --network acme goacme/lego -s http://acme-srv -a --email "lego@example.com" --eab --kid keyid_00 --hmac V2VfbmVlZF9hbm90aGVyX3ZlcnkfX2xvbmdfaG1hY190b19jaGVja19lYWJfZm9yX2tleWlkXzAwX2FzX2xlZ29fZW5mb3JjZXNfYW5faG1hY19sb25nZXJfdGhhbl8yNTZfYml0cw --user-agent template_name=acme -d lego.acme --http run
+        docker run -i -v $PWD/lego:/.lego/ --rm --name lego --network acme goacme/lego -s http://acme-srv -a --email "lego@example.com" --eab --kid keyid_00 --hmac V2VfbmVlZF9hbm90aGVyX3ZlcnkfX2xvbmdfaG1hY190b19jaGVja19lYWJfZm9yX2tleWlkXzAwX2FzX2xlZ29fZW5mb3JjZXNfYW5faG1hY19sb25nZXJfdGhhbl8yNTZfYml0cw --user-agent template_name=unknown -d lego.acme --http run
 
     - name: "02a - check  result "
       if: steps.legofail.outcome != 'failure'
       run: |
-        echo "legofail outcome is ${{steps.certbotfail.outcome }}"
+        echo "legofail outcome is ${{steps.legofail.outcome }}"
         exit 1
 
     - name: "02b - Enroll lego with a template_name taken from header_info included in kid.json"
