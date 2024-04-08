@@ -162,7 +162,7 @@ jobs:
 
     - name: "Enroll acme.sh"
       run: |
-        rm -rf acme-sh/*
+        sudo rm -rf acme-sh/*
         docker run --rm -i -v "$(pwd)/acme-sh":/acme.sh --network acme --name=acme-sh neilpang/acme.sh:latest --issue --server http://acme-srv  --accountemail 'acme-sh@example.com' -d acme-sh.acme --alpn --standalone --debug 3 --output-insecure
         openssl verify -CAfile examples/Docker/data/acme_ca/root-ca-cert.pem -untrusted examples/Docker/data/acme_ca/sub-ca-cert.pem acme-sh/acme-sh.acme_ecc/acme-sh.acme.cer
         openssl x509 -in acme-sh/acme-sh.acme_ecc/acme-sh.acme.cer -text -noout
@@ -677,7 +677,7 @@ jobs:
 
     - name: "Register certbot"
       run: |
-        rm -rf certbot/*
+        sudo rm -rf certbot/*
         docker run -i --rm --name certbot --network acme -v $PWD/certbot:/etc/letsencrypt/ certbot/certbot register --agree-tos -m 'certbot@example.com' --server http://acme-srv --no-eff-email
 
     - name: "Enroll HTTP-01 single domain certbot"
