@@ -58,8 +58,9 @@ jobs:
         sudo echo "api_password: $NCM_API_PASSWORD" >> examples/Docker/data/acme_srv.cfg
         sudo echo "ca_name: $NCM_CA_NAME" >> examples/Docker/data/acme_srv.cfg
         sudo echo "ca_bundle: $NCM_CA_BUNDLE" >> examples/Docker/data/acme_srv.cfg
+        sudo echo "eab_profiling: True" >> examples/Docker/data/acme_srv.cfg
         sudo sed -i "s/tnauthlist_support: False/tnauthlist_support: False\nheader_info_list: [\"HTTP_USER_AGENT\"]/g" examples/Docker/data/acme_srv.cfg
-        sudo echo -e "\n\n[EABhandler]" >> examples/Docker/data/acme_srv.cfg
+        sudo echo -e "\n[EABhandler]" >> examples/Docker/data/acme_srv.cfg
         sudo echo "eab_handler_file: /var/www/acme2certifier/examples/eab_handler/kid_profile_handler.py" >> examples/Docker/data/acme_srv.cfg
         sudo echo "key_file: volume/kid_profiles.json" >> examples/Docker/data/acme_srv.cfg
 
