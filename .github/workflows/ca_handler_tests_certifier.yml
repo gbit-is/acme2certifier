@@ -493,7 +493,7 @@ jobs:
         awk 'BEGIN {c=0;} /BEGIN CERT/{c++} { print > "cert-" c ".pem"}' < acme-sh/acme-sh.acme_ecc/ca.cer
         openssl verify -CAfile cert-2.pem -untrusted cert-1.pem  acme-sh/acme-sh.acme_ecc/acme-sh.acme.cer
         openssl x509 -in acme-sh/acme-sh.acme_ecc/acme-sh.acme.cer -text -noout
-        openssl x509 -in acme-sh/acme-sh.acme_ecc/acme-sh.acme.cer -ext extendedKeyUsage -noout | grep "TLS Web Server Authentication, TLS Web Client Authentication"
+        openssl x509 -in acme-sh/acme-sh.acme_ecc/acme-sh.acme.cer -ext extendedKeyUsage -noout | grep "Code Signing"
 
     - name: "EAB - 05 - Enroll lego with default values from acme.cfg"
       run: |
@@ -503,8 +503,7 @@ jobs:
         sudo openssl x509 -in lego/certificates/lego.acme.crt -issuer --noout
         sudo openssl verify -CAfile cert-2.pem -untrusted cert-1.pem  lego/certificates/lego.acme.crt
         sudo openssl x509 -in lego/certificates/lego.acme.crt -text -noout
-        sudo openssl x509 -in lego/certificates/lego.acme.crt -text -ext extendedKeyUsage | grep "TLS Web Server Authentication, TLS Web Client Authentication"
-
+        sudo openssl x509 -in lego/certificates/lego.acme.crt -text -ext extendedKeyUsage | grep "Code Signing"
 
     - name: "[ * ] collecting test logs"
       if: ${{ failure() }}
