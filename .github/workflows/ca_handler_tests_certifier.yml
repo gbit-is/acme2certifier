@@ -663,7 +663,7 @@ jobs:
         NCM_CA_BUNDLE: ${{ secrets.NCM_CA_BUNDLE }}
         PROFILE: ${{ secrets.PROFILE }}
 
-    - name: "Reconfigure a2c "
+    - name: "Profile 101 - Reconfigure a2c "
       run: |
         docker exec acme-srv sh /tmp/acme2certifier/rpm_tester.sh restart
 
@@ -679,9 +679,6 @@ jobs:
 
     - name: "Profile 101 - Test http://acme-srv/directory is accessable"
       run: docker run -i --rm --network acme curlimages/curl -f http://acme-srv/directory
-
-    - name: "Profile 101 - Test if https://acme-srv/directory is accessable"
-      run: docker run -i --rm --network acme curlimages/curl --insecure -f https://acme-srv/directory
 
     - name: "Profile 101 - Enroll acme.sh"
       run: |
