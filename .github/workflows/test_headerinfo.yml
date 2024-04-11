@@ -50,6 +50,9 @@ jobs:
         sudo cp .github/acme2certifier_key.pem examples/Docker/data/acme2certifier_key.pem
         sudo cp .github/django_settings.py examples/Docker/data/settings.py
         sudo cp examples/ca_handler/xca_ca_handler.py examples/Docker/data/ca_handler.py
+        sudo sed -i "s/error = self._profile_check(csr)/qset = header_info_get(self.logger, csr=csr)\n        if qset:\n        self.logger.info('header_info: %s', qset[-1]['header_info'])/g" examples/Docker/data/ca_handler.py
+
+
         sudo chmod 777 examples/Docker/data/ca_handler.py
         sudo mkdir -p examples/Docker/data/xca
         sudo chmod -R 777 examples/Docker/data/xca
@@ -59,7 +62,7 @@ jobs:
         sudo touch examples/Docker/data/acme_srv.cfg
         sudo chmod 777 examples/Docker/data/acme_srv.cfg
         sudo head -n -8 .github/openssl_ca_handler.py_acme_srv_default_handler.cfg > examples/Docker/data/acme_srv.cfg
-        sudo echo "handler_file: /var/www/acme2certifier/examples/ca_handler/xca_ca_handler.py" >> examples/Docker/data/acme_srv.cfg
+        # sudo echo "handler_file: /var/www/acme2certifier/examples/ca_handler/xca_ca_handler.py" >> examples/Docker/data/acme_srv.cfg
         sudo echo "xdb_file: volume/xca/$XCA_DB_NAME" >> examples/Docker/data/acme_srv.cfg
         sudo echo "issuing_ca_name: $XCA_ISSUING_CA" >> examples/Docker/data/acme_srv.cfg
         sudo echo "passphrase: $XCA_PASSPHRASE" >> examples/Docker/data/acme_srv.cfg
