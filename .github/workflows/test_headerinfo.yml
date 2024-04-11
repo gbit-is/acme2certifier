@@ -53,7 +53,7 @@ jobs:
 
         sudo chmod 777 examples/Docker/data/ca_handler.py
         sudo sed -i "s/error = self._profile_check(csr)/qset = header_info_get(self.logger, csr=csr)\n            if qset:\n                self.logger.info('header_info: %s', qset[-1]['header_info'])/g" examples/Docker/data/ca_handler.py
-
+        sudo sed -i "s/header_info_field_validate, config_headerinfo_get, config_eab_profile_load/header_info_get, header_info_field_validate, config_headerinfo_get, config_eab_profile_load/g" examples/Docker/data/ca_handler.py
         sudo mkdir -p examples/Docker/data/xca
         sudo chmod -R 777 examples/Docker/data/xca
         sudo cp test/ca/acme2certifier-clean.xdb examples/Docker/data/xca/$XCA_DB_NAME
