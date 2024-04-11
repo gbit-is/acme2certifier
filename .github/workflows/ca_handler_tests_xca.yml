@@ -477,7 +477,7 @@ jobs:
 
     - name: "EAB - 06 - Enroll acme with not allowed headerinfo-field (should fail)"
       id: acmefail03
-      # continue-on-error: true
+      continue-on-error: true
       run: |
         sudo rm -rf acme-sh/*
         docker run --rm -i -v "$(pwd)/acme-sh":/acme.sh --network acme --name=acme-sh neilpang/acme.sh:latest --register-account --server http://acme-srv --accountemail 'acme-sh@example.com' --eab-kid keyid_02 --eab-hmac-key dGhpc19pc19hX3ZlcnlfbG9uZ19obWFjX3RvX21ha2Vfc3VyZV90aGF0X2l0c19tb3JlX3RoYW5fMjU2X2JpdHM --debug 3
@@ -491,7 +491,7 @@ jobs:
 
     - name: "EAB - 06 - Enroll lego with not allowed headerinfo-field (should fail)"
       id: legofail03
-      # continue-on-error: true
+      continue-on-error: true
       run: |
         sudo rm -rf lego/*
         docker run -i -v $PWD/lego:/.lego/ --rm --name lego --network acme goacme/lego -s http://acme-srv -a --email "lego@example.com" --eab --kid keyid_02 --hmac dGhpc19pc19hX3ZlcnlfbG9uZ19obWFjX3RvX21ha2Vfc3VyZV90aGF0X2l0c19tb3JlX3RoYW5fMjU2X2JpdHM --user-agent template_name=acme -d lego.acme --http run
@@ -992,7 +992,7 @@ jobs:
 
     - name: "EAB - 06 - Enroll acme with not allowed headerinfo-field (should fail)"
       id: acmefail03
-      # continue-on-error: true
+      continue-on-error: true
       run: |
         sudo rm -rf acme-sh/*
         docker run --rm -i -v "$(pwd)/acme-sh":/acme.sh --network acme --name=acme-sh neilpang/acme.sh:latest --register-account --server http://acme-srv --accountemail 'acme-sh@example.com' --eab-kid keyid_02 --eab-hmac-key dGhpc19pc19hX3ZlcnlfbG9uZ19obWFjX3RvX21ha2Vfc3VyZV90aGF0X2l0c19tb3JlX3RoYW5fMjU2X2JpdHM --debug 3
@@ -1006,7 +1006,7 @@ jobs:
 
     - name: "EAB - 06 - Enroll lego with not allowed headerinfo-field (should fail)"
       id: legofail03
-      # continue-on-error: true
+      continue-on-error: true
       run: |
         sudo rm -rf lego/*
         docker run -i -v $PWD/lego:/.lego/ --rm --name lego --network acme goacme/lego -s http://acme-srv -a --email "lego@example.com" --eab --kid keyid_02 --hmac dGhpc19pc19hX3ZlcnlfbG9uZ19obWFjX3RvX21ha2Vfc3VyZV90aGF0X2l0c19tb3JlX3RoYW5fMjU2X2JpdHM --user-agent template_name=acme -d lego.acme --http run
@@ -1016,7 +1016,6 @@ jobs:
       run: |
         echo "legofail outcome is ${{steps.legofail03.outcome }}"
         exit 1
-
 
     - name: "[ * ] collecting test logs"
       if: ${{ failure() }}
