@@ -52,7 +52,7 @@ jobs:
         sudo cp examples/ca_handler/xca_ca_handler.py examples/Docker/data/ca_handler.py
 
         sudo chmod 777 examples/Docker/data/ca_handler.py
-        sudo sed -i "s/error = self._profile_check(csr)/qset = header_info_get(self.logger, csr=csr)\n                if qset:\n                self.logger.info('header_info: %s', qset[-1]['header_info'])/g" examples/Docker/data/ca_handler.py
+        sudo sed -i "s/error = self._profile_check(csr)/qset = header_info_get(self.logger, csr=csr)\n            if qset:\n                self.logger.info('header_info: %s', qset[-1]['header_info'])/g" examples/Docker/data/ca_handler.py
 
         sudo mkdir -p examples/Docker/data/xca
         sudo chmod -R 777 examples/Docker/data/xca
@@ -118,7 +118,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: ${{ failure() }}
       with:
-        name: _wsgi_header_info-${{ matrix.websrv }}-${{ matrix.dbhandler }}.tar.gz
+        name: header_info-${{ matrix.websrv }}-${{ matrix.dbhandler }}.tar.gz
         path: ${{ github.workspace }}/artifact/upload/
 
   header_info_tests_rpm:
