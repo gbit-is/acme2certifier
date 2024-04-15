@@ -86,10 +86,6 @@ jobs:
     - name: "Header-info - Test if https://acme-srv/directory is accessable"
       run: docker run -i --rm --network acme curlimages/curl --insecure -f https://acme-srv/directory
 
-    - name: "[ PREPARE ] prepare acme.sh container"
-      run: |
-        docker run --rm -id -v "$(pwd)/acme-sh":/acme.sh --network acme --name=acme-sh neilpang/acme.sh:latest daemon
-
     - name: "Header-info - 01 - Enroll acme.sh with profile_name ${{ secrets.ASA_PROFILE1 }}"
       run: |
         sudo rm  -rf acme-sh/*
