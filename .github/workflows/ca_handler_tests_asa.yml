@@ -162,7 +162,7 @@ jobs:
         sudo openssl x509 -in lego/certificates/lego.acme.crt -issuer --noout
         sudo openssl verify -CAfile cert-2.pem -untrusted cert-1.pem  lego/certificates/lego.acme.crt
         sudo openssl x509 -in lego/certificates/lego.acme.crt -text -noout
-        openssl x509 -in acme-sh/acme-sh.acme_ecc/acme-sh.acme.cer -ext keyUsage -noout | grep "Digital Signature"
+        sudo openssl x509 -in lego/certificates/lego.acme.crt -ext keyUsage -noout | grep "Digital Signature"
 
     - name: "[ * ] collecting test logs"
       if: ${{ failure() }}
