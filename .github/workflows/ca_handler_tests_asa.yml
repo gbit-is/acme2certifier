@@ -605,16 +605,16 @@ jobs:
         exit 1
 
     - name: "EAB with headerinfo - 04 - Enroll lego with a not allowed fqdn in kid.json (to fail)"
-      id: legofail02
+      id: legofail021
       continue-on-error: true
       run: |
         sudo rm -rf lego/*
         docker run -i -v $PWD/lego:/.lego/ --rm --name lego --network acme goacme/lego -s http://acme-srv -a --email "lego@example.com" --eab --kid keyid_02 --hmac dGhpc19pc19hX3ZlcnlfbG9uZ19obWFjX3RvX21ha2Vfc3VyZV90aGF0X2l0c19tb3JlX3RoYW5fMjU2X2JpdHM -k rsa2048 -d lego.acme --http run
 
     - name: "EAB with headerinfo - 04a - check  result "
-      if: steps.legofail02.outcome != 'failure'
+      if: steps.legofail021.outcome != 'failure'
       run: |
-        echo "legofail outcome is ${{steps.legofail02.outcome }}"
+        echo "legofail outcome is ${{steps.legofail021.outcome }}"
         exit 1
 
     - name: "EAB with headerinfo - 05 - Enroll acme with default values from acme.cfg"
