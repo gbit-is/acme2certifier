@@ -68,9 +68,9 @@ jobs:
 
         sudo cp examples/eab_handler/kid_profiles.json examples/Docker/data/kid_profiles.json
         sudo chmod 777 examples/eab_handler/kid_profiles.json
-        sudo sed -i "s/\"profile_id\"\: \[\"profile_1\", \"profile_2\", \"profile_3\"\]/\"profile_name\"\: \[\"ACME_2\", \"ACME\"\]/g" examples/Docker/data/kid_profiles.json
-        sudo sed -i "s/\"profile_id\"\: \"profile_2\"/\"profile_name\"\: \"ACME_2\"/g" examples/Docker/data/kid_profiles.json
-        sudo sed -i "s/\"ca_name\": \"example_ca_2\",/\"unknown_key\": \"SubCA2\"/" examples/Docker/data/kid_profiles.json
+        sudo sed -i "s/\"profile_id\"\: \[\"profile_1\", \"profile_2\", \"profile_3\"\]/\"profile_name\"\: \[\"$ASA_PROFILE2\", \"$ASA_PROFILE1\"\]/g" examples/Docker/data/kid_profiles.json
+        sudo sed -i "s/\"profile_id\"\: \"profile_2\"/\"profile_name\"\: \"$ASA_PROFILE3\"/g" examples/Docker/data/kid_profiles.json
+        sudo sed -i "s/\"ca_name\": \"example_ca_2\",/\"ca_name\": \"ASA_CA_NAME2\"/" examples/Docker/data/kid_profiles.json
         sudo sed -i "s/\"ca_name\": \"example_ca\",/\"unknown_key\": \"unknown_value\"/g" examples/Docker/data/kid_profiles.json
         sudo sed -i "s/example.net/acme/g" examples/Docker/data/kid_profiles.json
         sudo sed -i '18,19d' examples/Docker/data/kid_profiles.json
@@ -85,8 +85,11 @@ jobs:
         ASA_API_PASSWORD: ${{ secrets.ASA_API_PASSWORD }}
         ASA_API_KEY: ${{ secrets.ASA_API_KEY }}
         ASA_CA_NAME: ${{ secrets.ASA_CA_NAME }}
+        ASA_CA_NAME2: ${{ secrets.ASA_CA_NAME2 }}
         ASA_CA_BUNDLE: ${{ secrets.ASA_CA_BUNDLE }}
         ASA_PROFILE1: ${{ secrets.ASA_PROFILE1 }}
+        ASA_PROFILE2: ${{ secrets.ASA_PROFILE2 }}
+        ASA_PROFILE3: ${{ secrets.ASA_PROFILE3 }}
 
     - name: "EAB without headerinfo -  Sleep for 10s"
       uses: juliangruber/sleep-action@v2.0.3
@@ -107,6 +110,7 @@ jobs:
         awk 'BEGIN {c=0;} /BEGIN CERT/{c++} { print > "cert-" c ".pem"}' < acme-sh/acme-sh.acme/ca.cer
         openssl verify -CAfile cert-2.pem -untrusted cert-1.pem  acme-sh/acme-sh.acme/acme-sh.acme.cer
         openssl x509 -in acme-sh/acme-sh.acme/acme-sh.acme.cer -text -noout
+        openssl x509 -in acme-sh/acme-sh.acme/acme-sh.acme.cer -issuer --noout | grep -i ${{ secrets.ASA_CA_NAME }}
         openssl x509 -in acme-sh/acme-sh.acme/acme-sh.acme.cer -ext keyUsage -noout | grep -i "Key Encipherment, Data Encipherment"
 
     - name: "EAB without headerinfo - 01 - Enroll lego without profile_name"
@@ -115,21 +119,28 @@ jobs:
         docker run -i -v $PWD/lego:/.lego/ --rm --name lego --network acme goacme/lego -s http://acme-srv -a --email "lego@example.com" --eab --kid keyid_00 --hmac V2VfbmVlZF9hbm90aGVyX3ZlcnkfX2xvbmdfaG1hY190b19jaGVja19lYWJfZm9yX2tleWlkXzAwX2FzX2xlZ29fZW5mb3JjZXNfYW5faG1hY19sb25nZXJfdGhhbl8yNTZfYml0cw -k rsa2048 -d lego.acme --http run
         sudo openssl verify -CAfile cert-2.pem -untrusted cert-1.pem  lego/certificates/lego.acme.crt
         sudo openssl x509 -in lego/certificates/lego.acme.crt -text -noout
+        sudo openssl x509 -in lego/certificates/lego.acme.crt -issuer --noout | grep -i ${{ secrets.ASA_CA_NAME }}
         sudo openssl x509 -in lego/certificates/lego.acme.crt -ext keyUsage -noout | grep -i "Key Encipherment, Data Encipherment"
 
-    - name: "EAB without headerinfo - 02a - Enroll acme with a profile_name taken from header_info NOT included in kid.json (to fail)"
-      id: acmefailw01
-      continue-on-error: true
+    - name: "EAB without headerinfo - 02 - Enroll acme with a profile_name taken from header_info NOT included in kid.json (to be ignored)"
       run: |
         sudo rm -rf acme-sh/*
         docker run --rm -i -v "$(pwd)/acme-sh":/acme.sh --network acme --name=acme-sh neilpang/acme.sh:latest --register-account --server http://acme-srv --accountemail 'acme-sh@example.com' --eab-kid keyid_00 --eab-hmac-key V2VfbmVlZF9hbm90aGVyX3ZlcnkfX2xvbmdfaG1hY190b19jaGVja19lYWJfZm9yX2tleWlkXzAwX2FzX2xlZ29fZW5mb3JjZXNfYW5faG1hY19sb25nZXJfdGhhbl8yNTZfYml0cw --debug 3
         docker run --rm -i -v "$(pwd)/acme-sh":/acme.sh --network acme --name=acme-sh neilpang/acme.sh:latest --issue --server http://acme-srv --useragent profile_name=unknown -d acme-sh.acme --standalone --keylength 2048 --debug 3 --output-insecure
+        openssl verify -CAfile cert-2.pem -untrusted cert-1.pem  acme-sh/acme-sh.acme/acme-sh.acme.cer
+        openssl x509 -in acme-sh/acme-sh.acme/acme-sh.acme.cer -text -noout
+        openssl x509 -in acme-sh/acme-sh.acme/acme-sh.acme.cer -issuer --noout | grep -i ${{ secrets.ASA_CA_NAME }}
+        openssl x509 -in acme-sh/acme-sh.acme/acme-sh.acme.cer -ext keyUsage -noout | grep -i "Key Encipherment, Data Encipherment"
 
-    - name: "EAB without headerinfo - 02a - check  result "
-      if: steps.acmefailw01.outcome != 'failure'
+
+    - name: "EAB without headerinfo - 02 - Enroll lego  with a profile_name taken from header_info NOT included in kid.json (to be ignored)"
       run: |
-        echo "acmefail outcome is ${{steps.acmefailw01.outcome }}"
-        exit 1
+        sudo rm -rf lego/*
+        docker run -i -v $PWD/lego:/.lego/ --rm --name lego --network acme goacme/lego -s http://acme-srv -a --email "lego@example.com" --eab --kid keyid_00 --hmac V2VfbmVlZF9hbm90aGVyX3ZlcnkfX2xvbmdfaG1hY190b19jaGVja19lYWJfZm9yX2tleWlkXzAwX2FzX2xlZ29fZW5mb3JjZXNfYW5faG1hY19sb25nZXJfdGhhbl8yNTZfYml0cw --user-agent profile_name=unknown -k rsa2048 -d lego.acme --http run
+        sudo openssl verify -CAfile cert-2.pem -untrusted cert-1.pem  lego/certificates/lego.acme.crt
+        sudo openssl x509 -in lego/certificates/lego.acme.crt -text -noout
+        sudo openssl x509 -in lego/certificates/lego.acme.crt -issuer --noout | grep -i ${{ secrets.ASA_CA_NAME }}
+        sudo openssl x509 -in lego/certificates/lego.acme.crt -ext keyUsage -noout | grep "Digital Signature"
 
     - name: "jump out"
       run: exit 1
@@ -161,9 +172,9 @@ jobs:
 
         sudo cp examples/eab_handler/kid_profiles.json examples/Docker/data/kid_profiles.json
         sudo chmod 777 examples/eab_handler/kid_profiles.json
-        sudo sed -i "s/\"profile_id\"\: \[\"profile_1\", \"profile_2\", \"profile_3\"\]/\"profile_name\"\: \[\"ACME_2\", \"ACME\"\]/g" examples/Docker/data/kid_profiles.json
-        sudo sed -i "s/\"profile_id\"\: \"profile_2\"/\"profile_name\"\: \"ACME_2\"/g" examples/Docker/data/kid_profiles.json
-        sudo sed -i "s/\"ca_name\": \"example_ca_2\",/\"unknown_key\": \"SubCA2\"/" examples/Docker/data/kid_profiles.json
+        sudo sed -i "s/\"profile_id\"\: \[\"profile_1\", \"profile_2\", \"profile_3\"\]/\"profile_name\"\: \[\"$ASA_PROFILE2\", \"$ASA_PROFILE1\"\]/g" examples/Docker/data/kid_profiles.json
+        sudo sed -i "s/\"profile_id\"\: \"profile_2\"/\"profile_name\"\: \"$ASA_PROFILE3\"/g" examples/Docker/data/kid_profiles.json
+        sudo sed -i "s/\"ca_name\": \"example_ca_2\",/\"ca_name\": \"ASA_CA_NAME2\"/" examples/Docker/data/kid_profiles.json
         sudo sed -i "s/\"ca_name\": \"example_ca\",/\"unknown_key\": \"unknown_value\"/g" examples/Docker/data/kid_profiles.json
         sudo sed -i "s/example.net/acme/g" examples/Docker/data/kid_profiles.json
         sudo sed -i '18,19d' examples/Docker/data/kid_profiles.json
@@ -178,8 +189,11 @@ jobs:
         ASA_API_PASSWORD: ${{ secrets.ASA_API_PASSWORD }}
         ASA_API_KEY: ${{ secrets.ASA_API_KEY }}
         ASA_CA_NAME: ${{ secrets.ASA_CA_NAME }}
+        ASA_CA_NAME2: ${{ secrets.ASA_CA_NAME2 }}
         ASA_CA_BUNDLE: ${{ secrets.ASA_CA_BUNDLE }}
         ASA_PROFILE1: ${{ secrets.ASA_PROFILE1 }}
+        ASA_PROFILE2: ${{ secrets.ASA_PROFILE2 }}
+        ASA_PROFILE3: ${{ secrets.ASA_PROFILE3 }}
 
     - name: "EAB with headerinfo - Sleep for 10s"
       uses: juliangruber/sleep-action@v2.0.3
@@ -251,9 +265,9 @@ jobs:
       run: |
         sudo rm -rf lego/*
         docker run -i -v $PWD/lego:/.lego/ --rm --name lego --network acme goacme/lego -s http://acme-srv -a --email "lego@example.com" --eab --kid keyid_00 --hmac V2VfbmVlZF9hbm90aGVyX3ZlcnkfX2xvbmdfaG1hY190b19jaGVja19lYWJfZm9yX2tleWlkXzAwX2FzX2xlZ29fZW5mb3JjZXNfYW5faG1hY19sb25nZXJfdGhhbl8yNTZfYml0cw --user-agent profile_name=ACME -k rsa2048 -d lego.acme --http run
-        sudo openssl x509 -in lego/certificates/lego.acme.crt -issuer --noout
         sudo openssl verify -CAfile cert-2.pem -untrusted cert-1.pem  lego/certificates/lego.acme.crt
         sudo openssl x509 -in lego/certificates/lego.acme.crt -text -noout
+        sudo openssl x509 -in lego/certificates/lego.acme.crt -issuer --noout
         sudo openssl x509 -in lego/certificates/lego.acme.crt -ext keyUsage -noout | grep "Digital Signature"
 
     - name: "EAB with headerinfo - 03 - Enroll acme with a profile_name/ca_name taken from kid.json"
@@ -264,14 +278,15 @@ jobs:
         awk 'BEGIN {c=0;} /BEGIN CERT/{c++} { print > "cert-" c ".pem"}' < acme-sh/acme-sh.acme/ca.cer
         openssl verify -CAfile cert-2.pem -untrusted cert-1.pem  acme-sh/acme-sh.acme/acme-sh.acme.cer
         openssl x509 -in acme-sh/acme-sh.acme/acme-sh.acme.cer -text -noout
+        openssl x509 -in acme-sh/acme-sh.acme/acme-sh.acme.cer -issuer --noout | grep -i "Insta Demo Sub RSA CA"
         openssl x509 -in acme-sh/acme-sh.acme/acme-sh.acme.cer -ext keyUsage -noout | grep -i "Key Encipherment, Data Encipherment"
 
     - name: "EAB with headerinfo - 03 - Enroll lego with a profile_name/ca_name taken from kid.json"
       run: |
         sudo rm -rf lego/*
         docker run -i -v $PWD/lego:/.lego/ --rm --name lego --network acme goacme/lego -s http://acme-srv -a --email "lego@example.com" --eab --kid keyid_01 --hmac YW5vdXRoZXJfdmVyeV9sb25nX2htYWNfZm9yX2tleWlkXzAxX3doaWNoIHdpbGxfYmUgdXNlZF9kdXJpbmcgcmVncmVzc2lvbg  -k rsa2048 -d lego.acme --http run
-        sudo openssl x509 -in lego/certificates/lego.acme.crt -issuer --noout
         sudo openssl verify -CAfile cert-2.pem -untrusted cert-1.pem  lego/certificates/lego.acme.crt
+        sudo openssl x509 -in lego/certificates/lego.acme.crt -issuer --noout | grep -i "Insta Demo Sub RSA CA"
         sudo openssl x509 -in lego/certificates/lego.acme.crt -text -noout
         sudo openssl x509 -in lego/certificates/lego.acme.crt -text -ext keyUsage | grep -i "Key Encipherment, Data Encipherment"
 
@@ -316,7 +331,7 @@ jobs:
       run: |
         sudo rm -rf lego/*
         docker run -i -v $PWD/lego:/.lego/ --rm --name lego --network acme goacme/lego -s http://acme-srv -a --email "lego@example.com" --eab --kid keyid_03 --hmac YW5kX2ZpbmFsbHlfdGhlX2xhc3RfaG1hY19rZXlfd2hpY2hfaXNfbG9uZ2VyX3RoYW5fMjU2X2JpdHNfYW5kX3Nob3VsZF93b3Jr -k rsa2048 -d lego.acme --http run
-        sudo openssl x509 -in lego/certificates/lego.acme.crt -issuer --noout
+        sudo openssl x509 -in lego/certificates/lego.acme.crt -issuer --noout | grep -i "$ASA_CA_NAME"
         sudo openssl verify -CAfile cert-2.pem -untrusted cert-1.pem  lego/certificates/lego.acme.crt
         sudo openssl x509 -in lego/certificates/lego.acme.crt -text -noout
         sudo openssl x509 -in lego/certificates/lego.acme.crt -text -ext keyUsage | grep "Digital Signature"
