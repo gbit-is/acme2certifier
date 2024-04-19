@@ -94,7 +94,7 @@ jobs:
 
     - name: "Profile ${{ secrets.ASA_PROFILE1 }} - Revoke via acme.sh"
       run: |
-        docker exec -i acme-sh acme.sh --server http://acme-srv --revoke -d acme-sh.acme --standalone --debug 3 --output-insecure
+        docker run --rm -i -v "$(pwd)/acme-sh":/acme.sh --network acme --name=acme-sh neilpang/acme.sh:latest --revoke --server http://acme-srv -d acme-sh.acme --standalone --debug 3 --output-insecure
 
     - name: "Profile ${{ secrets.ASA_PROFILE1 }} - Register certbot"
       run: |
@@ -166,7 +166,7 @@ jobs:
 
     - name: "Profile ${{ secrets.ASA_PROFILE2 }} - Revoke via acme.sh"
       run: |
-        docker exec -i acme-sh acme.sh --server http://acme-srv --revoke -d acme-sh.acme --standalone --debug 3 --output-insecure
+        docker run --rm -i -v "$(pwd)/acme-sh":/acme.sh --network acme --name=acme-sh neilpang/acme.sh:latest --revoke --server http://acme-srv -d acme-sh.acme --standalone --debug 3 --output-insecure
 
     - name: "Profile ${{ secrets.ASA_PROFILE2 }} - Register certbot"
       run: |
