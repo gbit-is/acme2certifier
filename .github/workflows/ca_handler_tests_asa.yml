@@ -154,7 +154,6 @@ jobs:
         sudo rm -rf certbot/*
         sudo rm -rf lego/*
         sudo rm -rf acme-sh/*
-        docker restart acme-sh
 
     - name: "Profile ${{ secrets.ASA_PROFILE2 }} - Enroll acme.sh"
       run: |
