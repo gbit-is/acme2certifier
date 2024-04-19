@@ -139,7 +139,7 @@ jobs:
         sudo openssl verify -CAfile cert-2.pem -untrusted cert-1.pem  lego/certificates/lego.acme.crt
         sudo openssl x509 -in lego/certificates/lego.acme.crt -text -noout
         sudo openssl x509 -in lego/certificates/lego.acme.crt -issuer --noout | grep -i "${{ secrets.ASA_CA_NAME }}"
-        sudo openssl x509 -in lego/certificates/lego.acme.crt -ext keyUsage -noout | grep "Digital Signature"
+        sudo openssl x509 -in lego/certificates/lego.acme.crt -ext keyUsage -noout | grep "Key Encipherment, Data Encipherment"
 
     - name: "EAB without headerinfo - 03 - Enroll acme with a profile_name/ca_name taken from kid.json"
       run: |
