@@ -430,7 +430,7 @@ jobs:
         sudo openssl x509 -in lego/certificates/lego.acme.crt -text -ext extendedKeyUsage | grep "TLS Web Server Authentication"
 
     - name: "EAB without headerinfo - 04 - Enroll acme with a not allowed fqdn in kid.json (to fail)"
-      id: acmefail02
+      id: acmefail021
       continue-on-error: true
       run: |
         sudo rm -rf acme-sh/*
@@ -438,22 +438,22 @@ jobs:
         docker run --rm -i -v "$(pwd)/acme-sh":/acme.sh --network acme --name=acme-sh neilpang/acme.sh:latest --issue --server http://acme-srv  -d acme-sh.acme --standalone --debug 3 --output-insecure
 
     - name: "EAB without headerinfo - 04 - check  result "
-      if: steps.acmefail02.outcome != 'failure'
+      if: steps.acmefail021.outcome != 'failure'
       run: |
-        echo "acmefail outcome is ${{steps.acmefail02.outcome }}"
+        echo "acmefail outcome is ${{steps.acmefail021.outcome }}"
         exit 1
 
     - name: "EAB without headerinfo - 04 - Enroll lego with a not allowed fqdn in kid.json (to fail)"
-      id: legofail02
+      id: legofail021
       continue-on-error: true
       run: |
         sudo rm -rf lego/*
         docker run -i -v $PWD/lego:/.lego/ --rm --name lego --network acme goacme/lego -s http://acme-srv -a --email "lego@example.com" --eab --kid keyid_02 --hmac dGhpc19pc19hX3ZlcnlfbG9uZ19obWFjX3RvX21ha2Vfc3VyZV90aGF0X2l0c19tb3JlX3RoYW5fMjU2X2JpdHM -d lego.acme --http run
 
     - name: "EAB without headerinfo - 04a - check  result "
-      if: steps.legofail02.outcome != 'failure'
+      if: steps.legofail021.outcome != 'failure'
       run: |
-        echo "legofail outcome is ${{steps.legofail02.outcome }}"
+        echo "legofail outcome is ${{steps.legofail021.outcome }}"
         exit 1
 
     - name: "EAB without headerinfo - 05 - Enroll acme with default values from acme.cfg"
