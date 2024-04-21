@@ -138,7 +138,7 @@ jobs:
         git add examples/nginx
         git commit -a -m "rpm update"
 
-    - name: build RPM package
+    - name: "build RPM package"
       id: rpm
       uses: grindsa/rpmbuild@alma9
       with:
