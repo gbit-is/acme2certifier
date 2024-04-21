@@ -127,11 +127,16 @@ jobs:
         echo TAG_NAME=$(cat acme_srv/version.py | grep -i __version__ | head -n 1 | sed 's/__version__ = //g' | sed s/\'//g) >> $GITHUB_ENV
     - run: echo "Latest tag is ${{ env.TAG_NAME }}"
 
-    - name: update version number in spec file
+    - name: "[ PREPARE ] update version number in spec file"
       run: |
-        # sudo sed -i "s/Source0:.*/Source0:        %{name}-%{version}.tar.gz/g" examples/install_scripts/rpm/acme2certifier.spec
         sudo sed -i "s/__version__/${{ env.TAG_NAME }}/g" examples/install_scripts/rpm/acme2certifier.spec
-        cat examples/install_scripts/rpm/acme2certifier.spec
+        sudo sed -i "s/\/var\/www\/acme2certifier\/volume/\/etc\/nginx/g" examples/nginx/nginx_acme_srv_ssl.conf
+        sudo sed -i "s/Name:           acme2certifier/Name:           acme2certifier-min/g"  examples/install_scripts/rpm/acme2certifier.spec
+        sudo sed -i "s/%{buildroot}%{dest_dir}\/%{name}\/examples/%{buildroot}%{dest_dir}\/%{projname}\/examples/g"  examples/install_scripts/rpm/acme2certifier.spec
+        git config --global user.email "grindelsack@gmail.com"
+        git config --global user.name "rpm update"
+        git add examples/nginx
+        git commit -a -m "rpm update"
 
     - name: build RPM package
       id: rpm
