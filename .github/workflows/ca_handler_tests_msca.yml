@@ -82,6 +82,17 @@ jobs:
         WEB_SRV: ${{ matrix.websrv }}
         DB_HANDLER: ${{ matrix.dbhandler }}
 
+    - name: "Prepare ssh environment on ramdisk "
+      run: |
+        sudo mkdir -p /tmp/rd
+        sudo mount -t tmpfs -o size=5M none /tmp/rd
+        sudo echo "$SSH_KEY" > /tmp/rd/ak.tmp
+        sudo chmod 600 /tmp/rd/ak.tmp
+        sudo echo "$KNOWN_HOSTS" > /tmp/rd/known_hosts
+      env:
+        SSH_KEY: ${{ secrets.WCCE_SSH_ACCESS_KEY }}
+        KNOWN_HOSTS: ${{ secrets.WCCE_SSH_KNOWN_HOSTS }}
+
     - name: "Establish SSH connection"
       run: sudo ssh $SSH_USER@$SSH_HOST -fN -i /tmp/rd/ak.tmp -p $SSH_PORT -o UserKnownHostsFile=/tmp/rd/known_hosts -L 445:$WCCE_HOST:445 -L 88:$WCCE_HOST:88 -L 443:$WES_IP:443 -g
       env:
@@ -301,6 +312,17 @@ jobs:
     - name: "Execute install scipt"
       run: |
         docker exec acme-srv sh /tmp/acme2certifier/rpm_tester.sh
+
+    - name: "Prepare ssh environment on ramdisk "
+      run: |
+        sudo mkdir -p /tmp/rd
+        sudo mount -t tmpfs -o size=5M none /tmp/rd
+        sudo echo "$SSH_KEY" > /tmp/rd/ak.tmp
+        sudo chmod 600 /tmp/rd/ak.tmp
+        sudo echo "$KNOWN_HOSTS" > /tmp/rd/known_hosts
+      env:
+        SSH_KEY: ${{ secrets.WCCE_SSH_ACCESS_KEY }}
+        KNOWN_HOSTS: ${{ secrets.WCCE_SSH_KNOWN_HOSTS }}
 
     - name: "Establish SSH connection"
       run: sudo ssh $SSH_USER@$SSH_HOST -fN -i /tmp/rd/ak.tmp -p $SSH_PORT -o UserKnownHostsFile=/tmp/rd/known_hosts -L 445:$WCCE_HOST:445 -L 88:$WCCE_HOST:88 -L 443:$WES_IP:443 -g
