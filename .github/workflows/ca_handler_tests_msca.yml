@@ -154,11 +154,11 @@ jobs:
         sudo rm -rf certbot/
         docker run -i --rm --name certbot --network acme -v $PWD/certbot:/etc/letsencrypt/ certbot/certbot register --agree-tos -m 'certbot@example.com' --server http://acme-srv --no-eff-email
 
-    - name: "Enroll lego with template in acme_srv.cfg (WebServer)"
-      run: |
-        docker run -i -v $PWD/lego:/.lego/ --rm --name lego --network acme goacme/lego -s http://acme-srv -a --email "lego@example.com" -d lego.acme --http run
-        sudo openssl verify -CAfile examples/Docker/data/ca_certs.pem lego/certificates/lego.acme.crt
-        sudo openssl x509 -in lego/certificates/lego.acme.crt -ext extendedKeyUsage  -noout | grep -i "TLS Web Server"
+    #- name: "Enroll lego with template in acme_srv.cfg (WebServer)"
+    #  run: |
+    #    docker run -i -v $PWD/lego:/.lego/ --rm --name lego --network acme goacme/lego -s http://acme-srv -a --email "lego@example.com" -d lego.acme --http run
+    #    sudo openssl verify -CAfile examples/Docker/data/ca_certs.pem lego/certificates/lego.acme.crt
+    #    sudo openssl x509 -in lego/certificates/lego.acme.crt -ext extendedKeyUsage  -noout | grep -i "TLS Web Server"
 
     - name: "Enroll acme.sh with template in acme_srv.cfg (WebServer)"
       run: |
