@@ -7,7 +7,7 @@ ENV APACHE_LOG_DIR /var/log/apache2
 
 RUN apt-get update  && \
     DEBIAN_FRONTEND="noninteractive" apt-get -y install --no-install-recommends tzdata && \
-    apt-get install --no-install-recommends -yq \
+    DEBIAN_FRONTEND="noninteractive" apt-get install --no-install-recommends -y \
     python3-pip \
     apache2 \
     apache2-data \
