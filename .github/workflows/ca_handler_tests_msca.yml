@@ -129,6 +129,7 @@ jobs:
         sudo echo "ca_bundle: volume/ca_certs.pem" >> examples/Docker/data/acme_srv.cfg
         sudo echo "WCCE_HOST: $WCCE_HOST" >> examples/Docker/data/acme_srv.cfg
         sudo echo "request_timeout: 30" >> examples/Docker/data/acme_srv.cfg
+        sudo echo "WCCE_ADS_DOMAIN: $WCCE_ADS_DOMAIN" >> examples/Docker/data/acme_srv.cfg
         sudo sed -i "s/tnauthlist_support: False/tnauthlist_support: False\nheader_info_list: [\"HTTP_USER_AGENT\"]/g" examples/Docker/data/acme_srv.cfg
         sudo sed -i "s/revocation_reason_check_disable: False/revocation_reason_check_disable: False\nenrollment_timeout: 40/g" examples/Docker/data/acme_srv.cfg
         cd examples/Docker/
@@ -141,6 +142,7 @@ jobs:
         WES_TEMPLATE: ${{ secrets.WES_TEMPLATE }}
         WES_AUTHMETHOD: ${{ secrets.WES_AUTHMETHOD }}
         WCCE_HOST: ${{ secrets.WCCE_HOST }}
+        WCCE_ADS_DOMAIN: ${{ secrets.WCCE_ADS_DOMAIN }
 
     - name: "Sleep for 10s"
       uses: juliangruber/sleep-action@v2.0.3
@@ -355,7 +357,6 @@ jobs:
         sudo cp test/ca/certsrv_ca_certs.pem data/acme_ca/ca_certs.pem
         sudo touch data/acme_srv.cfg
         sudo chmod 777 data/acme_srv.cfg
-        sudo echo "$WCCE_CA_BUNDLE" > data/acme_ca/ca_certs.pem
         sudo head -n -8 .github/openssl_ca_handler.py_acme_srv_default_handler.cfg > data/acme_srv.cfg
         sudo echo "handler_file: /opt/acme2certifier/examples/ca_handler/mscertsrv_ca_handler.py" >> data/acme_srv.cfg
         sudo echo "host: $WES_HOST" >> data/acme_srv.cfg
