@@ -142,7 +142,7 @@ jobs:
         WES_TEMPLATE: ${{ secrets.WES_TEMPLATE }}
         WES_AUTHMETHOD: ${{ secrets.WES_AUTHMETHOD }}
         WCCE_HOST: ${{ secrets.WCCE_HOST }}
-        WCCE_ADS_DOMAIN: ${{ secrets.WCCE_ADS_DOMAIN }
+        WCCE_ADS_DOMAIN: ${{ secrets.WCCE_ADS_DOMAIN }}
 
     - name: "Sleep for 10s"
       uses: juliangruber/sleep-action@v2.0.3
