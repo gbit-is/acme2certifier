@@ -127,7 +127,9 @@ jobs:
         sudo echo "auth_method: ntlm" >> examples/Docker/data/acme_srv.cfg
         sudo echo "template: $WES_TEMPLATE" >> examples/Docker/data/acme_srv.cfg
         sudo echo "ca_bundle: volume/ca_certs.pem" >> examples/Docker/data/acme_srv.cfg
+        sudo echo "krb5_config: volume/krb5.conf" >> examples/Docker/data/acme_srv.cfg
         sudo echo "WCCE_HOST: $WCCE_HOST" >> examples/Docker/data/acme_srv.cfg
+
         sudo echo "request_timeout: 30" >> examples/Docker/data/acme_srv.cfg
         sudo echo "WCCE_ADS_DOMAIN: $WCCE_ADS_DOMAIN" >> examples/Docker/data/acme_srv.cfg
         sudo sed -i "s/tnauthlist_support: False/tnauthlist_support: False\nheader_info_list: [\"HTTP_USER_AGENT\"]/g" examples/Docker/data/acme_srv.cfg
