@@ -13,6 +13,7 @@ RUN apt-get update  && \
     apache2-data \
     libapache2-mod-wsgi-py3 \
     curl \
+    krb5-config \
     && rm -rf /var/lib/apt/lists/* &&\
     mkdir -p /var/www/acme2certifier/volume && \
     mkdir -p /var/www/acme2certifier/examples /var/www/acme2certifier/examples/
