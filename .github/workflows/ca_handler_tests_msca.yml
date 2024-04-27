@@ -136,7 +136,9 @@ jobs:
 
         sudo touch examples/Docker/data/krb5.conf
         sudo chmod 777 examples/Docker/data/krb5.conf
-        echo $WES_KRB5_CONF >> examples/Docker/data/krb5.conf
+        cat <<EOF > examples/Docker/data/krb5.conf
+        $WES_KRB5_CONF
+        EOF
 
         cd examples/Docker/
         docker-compose restart
