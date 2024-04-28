@@ -13,6 +13,7 @@ RUN apt-get update  && \
     apache2-data \
     libapache2-mod-wsgi-py3 \
     curl \
+    krb5-user \
     libgssapi-krb5-2 \
     libkrb5-3 \
     python3-gssapi \
