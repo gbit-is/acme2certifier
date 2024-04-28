@@ -127,7 +127,9 @@ jobs:
         sudo echo "template: $WES_TEMPLATE" >> examples/Docker/data/acme_srv.cfg
         sudo echo "ca_bundle: volume/ca_certs.pem" >> examples/Docker/data/acme_srv.cfg
         sudo echo "krb5_config: volume/krb5.conf" >> examples/Docker/data/acme_srv.cfg
+        sudo echo "verify: False" >> examples/Docker/data/acme_srv.cfg
         sudo echo "WCCE_HOST: $WCCE_HOST" >> examples/Docker/data/acme_srv.cfg
+        sudo echo "WCCE_FQDN: $WCCE_FQDN" >> examples/Docker/data/acme_srv.cfg
 
         sudo echo "request_timeout: 30" >> examples/Docker/data/acme_srv.cfg
         sudo echo "WCCE_ADS_DOMAIN: $WCCE_ADS_DOMAIN" >> examples/Docker/data/acme_srv.cfg
@@ -152,7 +154,7 @@ jobs:
         WCCE_HOST: ${{ secrets.WCCE_HOST }}
         WCCE_ADS_DOMAIN: ${{ secrets.WCCE_ADS_DOMAIN }}
         WES_KRB5_CONF: ${{ secrets.WES_KRB5_CONF }}
-
+        WCCE_FQDN: ${{ secrets.WCCE_FQDN }}
 
     - name: "Sleep for 10s"
       uses: juliangruber/sleep-action@v2.0.3

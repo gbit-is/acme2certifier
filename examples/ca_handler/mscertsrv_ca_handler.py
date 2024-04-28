@@ -26,6 +26,7 @@ class CAhandler(object):
         self.krb5_config = None
         self.proxy = None
         self.header_info_field = False
+        self.verify = True
 
     def __enter__(self):
         """ Makes CAhandler a Context Manager """
@@ -134,6 +135,7 @@ class CAhandler(object):
             self.ca_bundle = config_dic['CAhandler']['ca_bundle']
         if 'krb5_config' in config_dic['CAhandler']:
             self.krb5_config = config_dic['CAhandler']['krb5_config']
+        self.verify = config_dic.getboolean('CAhandler', 'verify', fallback=True)
 
         self.logger.debug('CAhandler._config_parameters_load() ended')
 
@@ -262,7 +264,7 @@ class CAhandler(object):
 
         if self.host and self.user and self.password and self.template:
             # setup certserv
-            ca_server = Certsrv(self.host, self.user, self.password, self.auth_method, self.ca_bundle, proxies=self.proxy)
+            ca_server = Certsrv(server=self.host, username=self.user, password=self.password, auth_method=self.auth_method, cafile=self.ca_bundle, verify=self.verify, proxies=self.proxy)
 
             # check connection and credentials
             auth_check = self._check_credentials(ca_server)
