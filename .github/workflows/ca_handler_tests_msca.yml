@@ -143,7 +143,6 @@ jobs:
         cd examples/Docker/
         docker-compose restart
         docker-compose logs
-        exit 1
       env:
         WES_HOST: ${{ secrets.WES_HOST }}
         WES_USER: ${{ secrets.WES_USER }}
