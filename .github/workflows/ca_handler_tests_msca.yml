@@ -125,8 +125,8 @@ jobs:
         sudo echo "password: $WES_PASSWORD" >> examples/Docker/data/acme_srv.cfg
         sudo echo "auth_method: gssapi" >> examples/Docker/data/acme_srv.cfg
         sudo echo "template: $WES_TEMPLATE" >> examples/Docker/data/acme_srv.cfg
-        sudo echo "ca_bundle: volume/ca_certs.pem" >> examples/Docker/data/acme_srv.cfg
-        sudo echo "krb5_config: volume/krb5.conf" >> examples/Docker/data/acme_srv.cfg
+        sudo echo "ca_bundle: /var/www/acme2certifier/volume/ca_certs.pem" >> examples/Docker/data/acme_srv.cfg
+        sudo echo "krb5_config: /var/www/acme2certifier/volume/krb5.conf" >> examples/Docker/data/acme_srv.cfg
         sudo echo "verify: False" >> examples/Docker/data/acme_srv.cfg
         sudo echo "WCCE_HOST: $WCCE_HOST" >> examples/Docker/data/acme_srv.cfg
         sudo echo "WCCE_FQDN: $WCCE_FQDN" >> examples/Docker/data/acme_srv.cfg
