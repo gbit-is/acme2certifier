@@ -15,8 +15,7 @@ RUN apt-get update  && \
     curl \
     libgssapi-krb5-2 \
     libkrb5-3 \
-    libkrb5-dev \
-    gcc \
+    python3-gssapi \
     && rm -rf /var/lib/apt/lists/* &&\
     mkdir -p /var/www/acme2certifier/volume && \
     mkdir -p /var/www/acme2certifier/examples /var/www/acme2certifier/examples/
